@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8" />
+    <title>Погода в Києві</title>
+    <style>
+        body { font-family: sans-serif; margin: 2rem; }
+        article { border: 1px solid #ccc; padding: 1rem; margin-bottom: 1rem; border-radius: 4px; }
+    </style>
+</head>
+<body>
+<header><h1>Поточна погода</h1></header>
+<section id="weather"></section>
+
+<script>
+    const URL = 'https://wttr.in/Kyiv?format=j1';
+
+    fetch(URL)
+        .then(res => res.json())
+        .then(data => showWeather(data))
+        .catch(err => {
+            document.querySelector('#weather').textContent = 'Помилка завантаження даних.';
+            console.error(err);
+        });
+
+    function showWeather(data) {
+        const sec = document.querySelector('#weather');
+        const now = new Date();
+
+        // Заголовок з датою
+        const headerArticle = document.createElement('article');
+        const h2 = document.createElement('h2');
+        h2.textContent = `Київ — ${now.toDateString()}`;
+        headerArticle.appendChild(h2);
+        sec.append(headerArticle);
+
+        // Основні дані погоди
+        const current = data.current_condition[0];
+        const infoArticle = document.createElement('article');
+        infoArticle.innerHTML = `
+            <p>Температура: <strong>${current.temp_C}°C</strong></p>
+            <p>Відчувається як: <strong>${current.FeelsLikeC}°C</strong></p>
+            <p>Вітер: <strong>${current.windspeedKmph} км/год</strong></p>
+            <p>Вологість: <strong>${current.humidity}%</strong></p>
+        `;
+        sec.append(infoArticle);
+    }
+</script>
+</body>
+</html>
